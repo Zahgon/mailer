@@ -43,15 +43,7 @@ class MailHandler(logging.Handler):
     
     def emit(self, record):
         """Emit a record."""
-        
-        try:
-            self.mailer.new(plain=self.format(record)).send()
-        
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        
-        except:
-            self.handleError(record)
+        pass
 
 
 logging.MailHandler = MailHandler

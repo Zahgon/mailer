@@ -76,8 +76,6 @@ class PostmarkTransport(object):
 
         del self.messages[:]
 
-    def startup(self):
-        self.messages = []
     
     def deliver(self, message):
         if len(self.messages) >= 500:
@@ -87,5 +85,3 @@ class PostmarkTransport(object):
         args = self._mapmessage(message)
         self.messages.append(args)
     
-    def shutdown(self):
-        self._batchsend()

@@ -59,21 +59,8 @@ class DebuggingSMTPServer(SMTPServer, Thread):
 		except KeyboardInterrupt:
 			pass
 	
-	def process_message(self, peer, sender, recipients, data):
-		# We construct a helpful namedtuple with all of the relevant delivery details.
-		message = TestMessage(sender, recipients, datetime.utcnow(), Parser().parsestr(data), data)
-		
-		with self._lock:  # Protect against parallel access.
-			self.messages.append(message)
 	
-	def run(self):
-		while not self._stop.is_set():
-			loop(timeout=self.POLL_TIMEOUT, count=1)
 	
-	def stop(self, timeout=None):
-		self._stop.set()
-		self.join(timeout)
-		self.close()
 	
 	def __getitem__(self, i):
 		return self.messages.__getitem__(i)
@@ -84,27 +71,10 @@ class DebuggingSMTPServer(SMTPServer, Thread):
 	def __iter__(self):
 		return iter(self.messages)
 	
-	def drain(self):
-		with self._lock:  # Protect against parallel access.
-			self.messages.clear()
 	
-	def next(self):
-		with self._lock:  # Protect against parallel access.
-			return self.messages.popleft()
 
 
 
-@fixture(scope='session')
-def smtp(request):
-	# TODO: Identify a random port number that is available.
-	
-	# Construct the debugging server instance.
-	server = DebuggingSMTPServer()
-	server.start()
-	
-	request.add_finalizer(server.stop)
-	
-	return server
 
 
 

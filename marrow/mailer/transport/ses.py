@@ -29,8 +29,6 @@ class AmazonTransport(object):  # pragma: no cover
         self.config = config
         self.connection = None
 
-    def startup(self):
-        self.connection = boto3.client('ses', region_name=self.region, **self.config)
 
     def deliver(self, message):
         try:
@@ -50,8 +48,3 @@ class AmazonTransport(object):  # pragma: no cover
             raise  # TODO: Raise appropriate internal exception.
             # ['status', 'reason', 'body', 'request_id', 'error_code', 'error_message']
 
-    def shutdown(self):
-        # if self.connection:
-        #     self.connection.close()
-
-        self.connection = None

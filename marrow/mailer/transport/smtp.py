@@ -45,26 +45,7 @@ class SMTPTransport(object):
         self.connection = None
         self.sent = 0
 
-    def startup(self):
-        if not self.connected:
-            self.connect_to_server()
 
-    def shutdown(self):
-        if self.connected:
-            log.debug("Closing SMTP connection")
-
-            try:
-                try:
-                    self.connection.quit()
-
-                except SMTPServerDisconnected: # pragma: no cover
-                    pass
-
-                except (SMTPException, socket.error): # pragma: no cover
-                    log.exception("Unhandled error while closing connection.")
-
-            finally:
-                self.connection = None
 
     def connect_to_server(self):
         if self.tls == 'ssl': # pragma: no cover
@@ -93,9 +74,6 @@ class SMTPTransport(object):
         self.connection = connection
         self.sent = 0
 
-    @property
-    def connected(self):
-        return getattr(self.connection, 'sock', None) is not None
 
     def deliver(self, message):
         if not self.connected:

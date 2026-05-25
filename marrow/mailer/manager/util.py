@@ -22,14 +22,6 @@ class TransportPool(object):
     def startup(self):
         pass
     
-    def shutdown(self):
-        try:
-            while True:
-                transport = self.transports.get(False)
-                transport.shutdown()
-        
-        except queue.Empty:
-            pass
     
     class Context(object):
         __slots__ = ('pool', 'transport')

@@ -25,17 +25,9 @@ class MailboxTransport(object):
         if not self.filename:
             raise ValueError("You must specify an mbox file name to write messages to.")
     
-    def startup(self):
-        self.box = mailbox.mbox(self.filename)
     
     def deliver(self, message):
         self.box.lock()
         self.box.add(mailbox.mboxMessage(str(message)))
         self.box.unlock()
     
-    def shutdown(self):
-        if self.box is None:
-            return
-        
-        self.box.close()
-        self.box = None

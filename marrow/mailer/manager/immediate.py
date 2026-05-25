@@ -26,13 +26,7 @@ class ImmediateManager(object):
         
         This just chains down to the transport layer.
         """
-        
-        log.info("Immediate delivery manager starting.")
-        
-        log.debug("Initializing transport queue.")
-        self.transport.startup()
-        
-        log.info("Immediate delivery manager started.")
+        pass
     
     def deliver(self, message):
         result = None
@@ -61,10 +55,3 @@ class ImmediateManager(object):
         
         return message, result
     
-    def shutdown(self):
-        log.info("Immediate delivery manager stopping.")
-        
-        log.debug("Draining transport queue.")
-        self.transport.shutdown()
-        
-        log.info("Immediate delivery manager stopped.")

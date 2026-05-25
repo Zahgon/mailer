@@ -27,15 +27,6 @@ class IMAPTransport(object): # pragma: no cover
         self.password = config.get('password', None)
         self.folder = config.get('folder', "INBOX")
     
-    def startup(self):
-        Protocol = imaplib.IMAP4_SSL if self.ssl else imaplib.IMAP4
-        self.connection = Protocol(self.host, self.port)
-        
-        if self.username:
-            result = self.connection.login(self.username, self.password)
-            
-            if result[0] != b'OK':
-                raise TransportException("Unable to authenticate with IMAP server.")
     
     def deliver(self, message):
         result = self.connection.append(
@@ -48,5 +39,3 @@ class IMAPTransport(object): # pragma: no cover
         if result[0] != b'OK':
             raise MessageFailedException("\n".join(result[1]))
     
-    def shutdown(self):
-        self.connection.logout()

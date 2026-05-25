@@ -59,17 +59,6 @@ class FuturesManager(object):
         
         super(FuturesManager, self).__init__()
     
-    def startup(self):
-        log.info("Futures delivery manager starting.")
-        
-        log.debug("Initializing transport queue.")
-        self.transport.startup()
-        
-        workers = self.workers
-        log.debug("Starting thread pool with %d workers." % (workers, ))
-        self.executor = futures.ThreadPoolExecutor(workers)
-        
-        log.info("Futures delivery manager ready.")
     
     def deliver(self, message):
         # Return the Future object so the application can register callbacks.
@@ -77,13 +66,3 @@ class FuturesManager(object):
         # the message thread-local.
         return self.executor.submit(partial(worker, self.transport), message)
     
-    def shutdown(self, wait=True):
-        log.info("Futures delivery manager stopping.")
-        
-        log.debug("Stopping thread pool.")
-        self.executor.shutdown(wait=wait)
-        
-        log.debug("Draining transport queue.")
-        self.transport.shutdown()
-        
-        log.info("Futures delivery manager stopped.")

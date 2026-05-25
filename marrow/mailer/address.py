@@ -117,10 +117,6 @@ class Address(object):
 
 		return formataddr((name_string, address)).replace('\n', '').encode(encoding)
 
-	@property
-	def valid(self):
-		email, err = EmailValidator().validate_email(self.address)
-		return False if err else True
 
 
 class AddressList(list):
@@ -185,20 +181,12 @@ class AddressList(list):
 	def append(self, value):
 		self.extend([value])
 
-	@property
-	def addresses(self):
-		return AddressList([i.address for i in self])
 
 	@property
 	def string_addresses(self, encoding=None):
 		"""Return a list of string representations of the addresses suitable
 		for usage in an SMTP transaction."""
-		
-		if not encoding:
-			encoding = self.encoding
-		
-		# We need the punycode goodness.
-		return [Address(i.address).encode(encoding).decode(encoding) for i in self]
+		pass
 
 
 class AutoConverter(object):

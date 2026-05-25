@@ -102,47 +102,8 @@ class Mailer(object):
 		
 		self.manager = Manager(manager_config, partial(Transport, transport_config))
 	
-	@staticmethod
-	def _load(spec, group):
-		if not isinstance(spec, basestring):
-			# It's already an object, just use it.
-			return spec
-		
-		if ':' in spec:
-			# Load the Python package(s) and target object.
-			return load_object(spec)
-		
-		# Load the entry point.
-		for entrypoint in pkg_resources.iter_entry_points(group, spec):
-			return entrypoint.load()
 	
-	def start(self):
-		if self.running:
-			log.warning("Attempt made to start an already running Mailer service.")
-			return
-		
-		log.info("Mail delivery service starting.")
-		
-		self.manager.startup()
-		self.running = True
-		
-		log.info("Mail delivery service started.")
-		
-		return self
 	
-	def stop(self):
-		if not self.running:
-			log.warning("Attempt made to stop an already stopped Mailer service.")
-			return
-		
-		log.info("Mail delivery service stopping.")
-		
-		self.manager.shutdown()
-		self.running = False
-		
-		log.info("Mail delivery service stopped.")
-		
-		return self
 	
 	def send(self, message):
 		if not self.running:
@@ -162,33 +123,7 @@ class Mailer(object):
 			log.debug("Message %s delivered.", message.id)
 		return result
 
-	def future_done(self, message, future):
-		if future.cancelled():
-			log.debug("Delivery of message %s cancelled.", message.id)
-		elif future.exception() is not None:
-			exc = future.exception()
-			log.error(
-				"Delivery of message %s failed.",
-				message.id,
-				exc_info=exc,
-			)
-		else:
-			log.debug("Message %s delivered.", message.id)
 
-	def new(self, author=None, to=None, subject=None, **kw):
-		data = dict(self.message_config)
-		data['mailer'] = self
-		
-		if author:
-			kw['author'] = author
-		if to:
-			kw['to'] = to
-		if subject:
-			kw['subject'] = subject
-		
-		data.update(kw)
-		
-		return Message(**data)
 
 
 class Delivery(Mailer):

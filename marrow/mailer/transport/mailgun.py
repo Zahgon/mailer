@@ -29,8 +29,6 @@ class MailgunTransport(object): # pragma: no cover
 		
 		self.session = None
 	
-	def startup(self):
-		self.session = requests.Session()
 	
 	def deliver(self, message):
 		domain = message.author.address.rpartition('@')[2]
@@ -46,8 +44,3 @@ class MailgunTransport(object): # pragma: no cover
 		
 		result.raise_for_status()
 	
-	def shutdown(self): 
-		if self.session:
-			self.session.close()
-		
-		self.session = None
